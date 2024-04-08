@@ -61,6 +61,7 @@
             changeSign.TabIndex = 0;
             changeSign.Text = "+/-";
             changeSign.UseVisualStyleBackColor = false;
+            changeSign.Click += changeSign_Click;
             // 
             // zero
             // 
@@ -84,6 +85,7 @@
             point.TabIndex = 2;
             point.Text = ",";
             point.UseVisualStyleBackColor = false;
+            point.Click += point_Click;
             // 
             // equal
             // 
@@ -215,7 +217,7 @@
             mianownik.TabIndex = 13;
             mianownik.Text = "1/x";
             mianownik.UseVisualStyleBackColor = false;
-            mianownik.Click += operation_Click;
+            mianownik.Click += mianownik_Click;
             // 
             // osiem
             // 
@@ -239,7 +241,7 @@
             kwadrat.TabIndex = 15;
             kwadrat.Text = "x^2";
             kwadrat.UseVisualStyleBackColor = false;
-            kwadrat.Click += operation_Click;
+            kwadrat.Click += kwadrat_Click;
             // 
             // dziewiec
             // 
