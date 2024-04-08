@@ -18,6 +18,7 @@ namespace Kalkulator
         private string operation;
         private bool isLastOperation = false;
         private bool newSecond = false;
+        private bool isResult = false;
         double value;
 
         enum Operation
@@ -38,15 +39,27 @@ namespace Kalkulator
                 textBox.Text = string.Empty;
 
             value = Convert.ToDouble((sender as Button).Text);
-            
-            textBox.Text += value;
-            if (newSecond)
-                secondValue = string.Empty;
-            if (currentOperation != Operation.None)
+            if(!isResult)
             {
-                newSecond = false;
-                secondValue += value;
+                textBox.Text += value;
+                if (newSecond)
+                    secondValue = string.Empty;
+                if (currentOperation != Operation.None)
+                {
+                    newSecond = false;
+                    secondValue += value;
+                }
+               
             }
+            else
+            {
+                textBox.Text = value.ToString();
+                isResult = false;
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
+            
+            
             
             isLastOperation = false;
             add.Enabled = true;
@@ -55,11 +68,17 @@ namespace Kalkulator
             divide.Enabled = true;
             kwadrat.Enabled = true;
             mianownik.Enabled = true;
+            point.Enabled = true;
         }
 
        
         private void add_Click(object sender, EventArgs e)
         {
+            if(isResult)
+            {
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
 
                 
                 if (currentOperation == Operation.None)
@@ -95,9 +114,16 @@ namespace Kalkulator
             divide.Enabled = false;
             kwadrat.Enabled = false;
             mianownik.Enabled = false;
+            point.Enabled = false;
+            isResult = false;
         }
         private void substract_Click(object sender, EventArgs e)
         {
+            if (isResult)
+            {
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
             if (currentOperation == Operation.None)
             {
                 firstValue = textBox.Text;
@@ -131,9 +157,16 @@ namespace Kalkulator
             kwadrat.Enabled = false;
             mianownik.Enabled = false;
             operation = "-";
+            isResult = false;
+            point.Enabled = false;
         }
         private void multiply_Click(object sender, EventArgs e)
         {
+            if (isResult)
+            {
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
             if (currentOperation == Operation.None)
             {
                 firstValue = textBox.Text;
@@ -166,10 +199,17 @@ namespace Kalkulator
             operation = "*";
             kwadrat.Enabled = false;
             mianownik.Enabled = false;
+            isResult = false;
+            point.Enabled = false;
         }
 
         private void divide_Click(object sender, EventArgs e)
         {
+            if (isResult)
+            {
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
             if (currentOperation == Operation.None)
             {
                 firstValue = textBox.Text;
@@ -203,6 +243,8 @@ namespace Kalkulator
             operation = "/";
             kwadrat.Enabled = false;
             mianownik.Enabled = false;
+            isResult = false;
+            point.Enabled = false;
         }
 
 
@@ -237,6 +279,13 @@ namespace Kalkulator
             secondValue = string.Empty;
             auxValue = string.Empty;
             isLastOperation = false;
+            add.Enabled = true;
+            minus.Enabled = true;
+            multiply.Enabled = true;
+            divide.Enabled = true;
+            kwadrat.Enabled = true;
+            mianownik.Enabled = true;
+            point.Enabled = true;
 
         }
         
@@ -265,17 +314,30 @@ namespace Kalkulator
                     }
 
                     textBox.Text = result.ToString();
+                    firstValue = textBox.Text;
 
-
-                    secondValue = string.Empty;
+                    
                 }
                 
             }
-            currentOperation = Operation.None;
+            
+            add.Enabled = true;
+            minus.Enabled = true;
+            multiply.Enabled = true;
+            divide.Enabled = true;
+            kwadrat.Enabled = true;
+            mianownik.Enabled = true;
+            point.Enabled = true;
+            isResult = true;
 
         }
         private void kwadrat_Click(object sender, EventArgs e)
         {
+            if (isResult)
+            {
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
             double val;
             
             if (secondValue=="")
@@ -300,6 +362,11 @@ namespace Kalkulator
         }
         private void mianownik_Click(object sender, EventArgs e)
         {
+            if (isResult)
+            {
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
             double val;
             if (secondValue == "")
             {
@@ -321,15 +388,31 @@ namespace Kalkulator
 
         private void changeSign_Click(object sender, EventArgs e)
         {
-            if (currentOperation == Operation.None)
+            if (isResult)
             {
-                double val = Double.Parse(textBox.Text);
+                currentOperation = Operation.None;
+                secondValue = string.Empty;
+            }
+            double val;
+            if (secondValue == "" && currentOperation==Operation.None)
+            {
+                val = Double.Parse(textBox.Text);
                 textBox.Text = (-val).ToString();
+                
+            }
+            else if(secondValue == "" && currentOperation != Operation.None)
+            {
+                val = Double.Parse(firstValue);
+                textBox.Text = textBox.Text.Replace(firstValue, (-val).ToString());
+                firstValue = (-val).ToString();
+
             }
             else
             {
-                secondValue = (-Double.Parse(secondValue)).ToString();
-                textBox.Text = firstValue + operation + secondValue.ToString();
+                val = Double.Parse(secondValue);
+                textBox.Text = textBox.Text.Replace(secondValue, (-val).ToString());
+                secondValue = (-val).ToString();
+                
             }
 
         }
