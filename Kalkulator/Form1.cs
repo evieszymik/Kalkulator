@@ -1,3 +1,4 @@
+using System.Text;
 using System.Windows.Forms;
 
 namespace Kalkulator
@@ -12,10 +13,11 @@ namespace Kalkulator
 
 
         private string firstValue;
-        private string currentValue;
+        private string auxValue="";
         private string secondValue="";
         private string operation;
         private bool isLastOperation = false;
+        private bool newSecond = false;
         double value;
 
         enum Operation
@@ -27,68 +29,217 @@ namespace Kalkulator
             None,
         }
         private Operation currentOperation = Operation.None;
+        private Operation previousOperation = Operation.None;
+        private Operation auxOperation = Operation.None;
 
         private void number_Click(object sender, EventArgs e)
         {
             if (textBox.Text == "0")
                 textBox.Text = string.Empty;
 
-           // value = Convert.ToDouble((sender as Button).Text);
-            currentValue = (sender as Button).Text;
+            value = Convert.ToDouble((sender as Button).Text);
+            
             textBox.Text += value;
-
+            if (newSecond)
+                secondValue = string.Empty;
             if (currentOperation != Operation.None)
+            {
+                newSecond = false;
                 secondValue += value;
+            }
+            
             isLastOperation = false;
+            add.Enabled = true;
+            minus.Enabled = true;
+            multiply.Enabled = true;
+            divide.Enabled = true;
+            kwadrat.Enabled = true;
+            mianownik.Enabled = true;
         }
 
-        private void operation_Click(object sender, EventArgs e)
+       
+        private void add_Click(object sender, EventArgs e)
         {
-            if (!isLastOperation)
-            {
-                operation = (sender as Button).Text;
-                firstValue = textBox.Text;
-                textBox.Text += $"{operation}";
 
-                currentOperation = operation switch
+                
+                if (currentOperation == Operation.None)
                 {
-                    "+" => Operation.Add,
-                    "-" => Operation.Substract,
-                    "*" => Operation.Multiply,
-                    "/" => Operation.Divide,
-                    _ => Operation.None
-                };
-                isLastOperation = true;
-            }
+                    firstValue = textBox.Text;
 
+                }
+                else
+                {
+                    if (auxValue != string.Empty)
+                    {
+                        secondValue = Calculate(currentOperation).ToString(); ;
+                        firstValue = auxValue;
+                        firstValue = (Calculate(auxOperation)).ToString();
+                        auxValue = string.Empty;
+
+                    }
+                    else
+                    {
+                        previousOperation = currentOperation;
+                        firstValue = Calculate(previousOperation).ToString();
+                    }
+
+                }
+                textBox.Text += "+";
+            operation = "+";
+                currentOperation = Operation.Add;
+                newSecond = true;
+            isLastOperation = true;
+            add.Enabled = false;
+            minus.Enabled = false;
+            multiply.Enabled = false;
+            divide.Enabled = false;
+            kwadrat.Enabled = false;
+            mianownik.Enabled = false;
+        }
+        private void substract_Click(object sender, EventArgs e)
+        {
+            if (currentOperation == Operation.None)
+            {
+                firstValue = textBox.Text;
+
+            }
+            else
+            {
+                if (auxValue != string.Empty)
+                {
+                    secondValue = Calculate(currentOperation).ToString(); ;
+                    firstValue = auxValue;
+                    firstValue = (Calculate(auxOperation)).ToString();
+                    auxValue = string.Empty;
+
+                }
+                else
+                {
+                    previousOperation = currentOperation;
+                    firstValue = Calculate(previousOperation).ToString();
+                }
+            }
+            textBox.Text += "-";
+            currentOperation = Operation.Substract;
+            newSecond = true;
+            
+            add.Enabled = false;
+            minus.Enabled = false;
+            multiply.Enabled = false;
+            divide.Enabled = false;
+            isLastOperation = true;
+            kwadrat.Enabled = false;
+            mianownik.Enabled = false;
+            operation = "-";
+        }
+        private void multiply_Click(object sender, EventArgs e)
+        {
+            if (currentOperation == Operation.None)
+            {
+                firstValue = textBox.Text;
+
+            }
+            else
+            {
+                previousOperation = currentOperation;
+                if(previousOperation==Operation.Add || previousOperation==Operation.Substract)
+                {
+                    auxValue = firstValue;
+                    auxOperation = previousOperation;
+                    firstValue = secondValue;
+                }
+                else
+                {
+                    firstValue = Calculate(previousOperation).ToString();
+                }
+                
+            }
+            textBox.Text += "*";
+            currentOperation = Operation.Multiply;
+            newSecond = true;
+           
+            add.Enabled = false;
+            minus.Enabled = false;
+            multiply.Enabled = false;
+            divide.Enabled = false;
+            isLastOperation = true;
+            operation = "*";
+            kwadrat.Enabled = false;
+            mianownik.Enabled = false;
+        }
+
+        private void divide_Click(object sender, EventArgs e)
+        {
+            if (currentOperation == Operation.None)
+            {
+                firstValue = textBox.Text;
+
+            }
+            else
+            {
+                previousOperation = currentOperation;
+                if (previousOperation == Operation.Add || previousOperation == Operation.Substract)
+                {
+                    auxValue = firstValue;
+                    auxOperation = previousOperation;
+                    firstValue = secondValue;
+                }
+                else
+                {
+                    firstValue = Calculate(previousOperation).ToString();
+                    
+                }
+
+            }
+            textBox.Text += "/";
+            currentOperation = Operation.Divide;
+            newSecond = true;
+            
+            add.Enabled = false;
+            minus.Enabled = false;
+            multiply.Enabled = false;
+            divide.Enabled = false;
+            isLastOperation = true;
+            operation = "/";
+            kwadrat.Enabled = false;
+            mianownik.Enabled = false;
+        }
+
+
+        private double Calculate(Operation operation)
+        {
+            switch(operation)
+            {
+                case Operation.Add:
+                    return Double.Parse(firstValue) + Double.Parse(secondValue);
+                case Operation.Substract:
+                    return Double.Parse(firstValue) - Double.Parse(secondValue);
+                case Operation.Multiply:
+                    return Double.Parse(firstValue) * Double.Parse(secondValue);
+                case Operation.Divide:
+                    if (secondValue == "0")
+                    {
+                        textBox.Text = "Nie mo¿na dzieliæ przez 0!";
+                        return 0;
+                    }
+                    return Double.Parse(firstValue) / Double.Parse(secondValue);
+            }
+            return 0;
         }
         private void clear_Click(object sender, EventArgs e)
         {
             textBox.Text = "0";
             currentOperation = Operation.None;
+            previousOperation = Operation.None;
+            auxOperation = Operation.None;
+            isLastOperation = false;
+            firstValue = string.Empty;
+            secondValue = string.Empty;
+            auxValue = string.Empty;
             isLastOperation = false;
 
         }
-        private double Calculate(double firstNumber, double secondNumber)
-        {
-            switch (currentOperation)
-            {
-                case Operation.Add:
-                    return firstNumber + secondNumber;
-                case Operation.Substract:
-                    return firstNumber - secondNumber;
-                case Operation.Multiply:
-                    return firstNumber * secondNumber;
-                case Operation.Divide:
-                    if (secondNumber == 0)
-                    {
-                        MessageBox.Show("Nie mo¿na dzieliæ przez 0!");
-                        return 0;
-                    }
-                    return firstNumber / secondNumber;
-            }
-            return 0;
-        }
+        
         private void result_Click(object sender, EventArgs e)
         {
             if(secondValue=="")
@@ -99,34 +250,49 @@ namespace Kalkulator
             }
             else
             {
-                double second = Double.Parse(secondValue);
-                double first = Double.Parse(firstValue);
-                double result = Calculate(first, second);
+                if(secondValue=="0")
+                {
+                    textBox.Text = "Nie mo¿na dzieliæ przez 0!";
+                }
+                else
+                {
+                    double result = Calculate(currentOperation);
+                    if (auxValue != string.Empty)
+                    {
+                        firstValue = auxValue;
+                        secondValue = result.ToString();
+                        result = Calculate(auxOperation);
+                    }
 
-                textBox.Text = result.ToString();
+                    textBox.Text = result.ToString();
 
+
+                    secondValue = string.Empty;
+                }
                 
-                secondValue = string.Empty;
             }
             currentOperation = Operation.None;
-
-
-
-
 
         }
         private void kwadrat_Click(object sender, EventArgs e)
         {
             double val;
-            if (!isLastOperation)
+            
+            if (secondValue=="")
             {
                 val = Double.Parse(textBox.Text);
                 textBox.Text = (val * val).ToString();
+                add.Enabled = true;
+                minus.Enabled = true;
+                multiply.Enabled = true;
+                divide.Enabled = true;
             }
             else
             {
-                val = Double.Parse(firstValue);
-                textBox.Text = (val * val).ToString() + operation;
+                val = Double.Parse(secondValue);
+                textBox.Text=textBox.Text.Replace(secondValue, (val * val).ToString());
+                secondValue = (val * val).ToString();
+                
             }
 
 
@@ -135,19 +301,22 @@ namespace Kalkulator
         private void mianownik_Click(object sender, EventArgs e)
         {
             double val;
-            if (currentOperation == Operation.None)
+            if (secondValue == "")
             {
                 val = Double.Parse(textBox.Text);
-                textBox.Text = (1 / val).ToString();
+                textBox.Text = (1/ val).ToString();
+                add.Enabled = true;
+                minus.Enabled = true;
+                multiply.Enabled = true;
+                divide.Enabled = true;
             }
             else
             {
-                secondValue = (1 / Double.Parse(secondValue)).ToString();
-                textBox.Text = firstValue + $"{operation}" + secondValue.ToString();
+                val = Double.Parse(secondValue);
+                textBox.Text = textBox.Text.Replace(secondValue, (1/val).ToString());
+                secondValue = (1/ val).ToString();
+
             }
-
-
-
         }
 
         private void changeSign_Click(object sender, EventArgs e)
@@ -167,6 +336,7 @@ namespace Kalkulator
 
         private void point_Click(object sender, EventArgs e)
         {
+
             if(!isLastOperation)
             {
                 if (textBox.Text == "0")

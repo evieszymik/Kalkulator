@@ -145,7 +145,7 @@
             add.TabIndex = 7;
             add.Text = "+";
             add.UseVisualStyleBackColor = false;
-            add.Click += operation_Click;
+            add.Click += add_Click;
             // 
             // cztery
             // 
@@ -193,7 +193,7 @@
             minus.TabIndex = 11;
             minus.Text = "-";
             minus.UseVisualStyleBackColor = false;
-            minus.Click += operation_Click;
+            minus.Click += substract_Click;
             // 
             // siedem
             // 
@@ -277,7 +277,7 @@
             multiply.TabIndex = 18;
             multiply.Text = "*";
             multiply.UseVisualStyleBackColor = false;
-            multiply.Click += operation_Click;
+            multiply.Click += multiply_Click;
             // 
             // divide
             // 
@@ -290,7 +290,7 @@
             divide.TabIndex = 19;
             divide.Text = "/";
             divide.UseVisualStyleBackColor = false;
-            divide.Click += operation_Click;
+            divide.Click += divide_Click;
             // 
             // textBox
             // 
