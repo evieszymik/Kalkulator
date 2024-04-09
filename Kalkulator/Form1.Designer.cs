@@ -83,7 +83,7 @@
             point.Name = "point";
             point.Size = new Size(90, 60);
             point.TabIndex = 2;
-            point.Text = ",";
+            point.Text = ".";
             point.UseVisualStyleBackColor = false;
             point.Click += point_Click;
             // 
