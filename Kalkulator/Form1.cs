@@ -305,7 +305,7 @@ namespace Kalkulator
                 else
                 {
                     double result = Calculate(currentOperation);
-                    MessageBox.Show(secondValue);
+                    
                     if (auxValue != string.Empty)
                     {
                         firstValue = auxValue;
