@@ -19,7 +19,6 @@ namespace Kalkulator
         private bool isLastOperation = false;
         private bool newSecond = false;
         private bool isResult = false;
-        private bool isPointActive = false;
         double value;
 
         enum Operation
@@ -70,7 +69,6 @@ namespace Kalkulator
             kwadrat.Enabled = true;
             mianownik.Enabled = true;
             point.Enabled = true;
-            isPointActive = false;
         }
 
        
@@ -288,8 +286,6 @@ namespace Kalkulator
             kwadrat.Enabled = true;
             mianownik.Enabled = true;
             point.Enabled = true;
-            isPointActive = false;
-
         }
         
         private void result_Click(object sender, EventArgs e)
@@ -309,6 +305,7 @@ namespace Kalkulator
                 else
                 {
                     double result = Calculate(currentOperation);
+                    MessageBox.Show(secondValue);
                     if (auxValue != string.Empty)
                     {
                         firstValue = auxValue;
@@ -332,8 +329,6 @@ namespace Kalkulator
             mianownik.Enabled = true;
             point.Enabled = true;
             isResult = true;
-            isPointActive = false;
-
         }
         private void kwadrat_Click(object sender, EventArgs e)
         {
@@ -423,7 +418,6 @@ namespace Kalkulator
 
         private void point_Click(object sender, EventArgs e)
         {
-            isPointActive = true;
             point.Enabled = false;
             add.Enabled = false;
             minus.Enabled = false;
@@ -438,6 +432,10 @@ namespace Kalkulator
                 }
                 else
                 {
+                    if(secondValue!="")
+                    {
+                        secondValue += ".";
+                    }
                     textBox.Text += ".";
                 }
                 isLastOperation = true;
